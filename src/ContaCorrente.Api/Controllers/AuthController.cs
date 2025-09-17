@@ -22,7 +22,7 @@ namespace ContaCorrente.Api.Controllers
             _validator = validator;
         }
 
-        public sealed record LoginRequest(string Cpf, string Senha);
+        public sealed record LoginRequest(string CpfOuConta, string Senha);
 
         /// <summary>Login com CPF ou nº da conta + senha (retorna JWT)</summary>
         /// <response code="200">Token emitido</response>
@@ -37,7 +37,7 @@ namespace ContaCorrente.Api.Controllers
         {
             try
             {
-                var q = new LoginQuery(body.Cpf, body.Senha);
+                var q = new LoginQuery(body.CpfOuConta, body.Senha);
                 await _validator.ValidateAndThrowAsync(q, ct);
 
                 var r = await _mediator.Send(q, ct);

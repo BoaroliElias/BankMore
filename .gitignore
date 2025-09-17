@@ -1,0 +1,21 @@
+# Visual Studio / .NET
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+
+# (opcional) Node, caso apareça por algum motivo
+node_modules/
+
+# Docker temporários
+Dockerfile.*.temp
+
+# Ignorar bin/obj em qualquer subprojeto
+src/**/bin/
+src/**/obj/

@@ -115,6 +115,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+var inContainer = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+if (!inContainer) app.UseHttpsRedirection();
+
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

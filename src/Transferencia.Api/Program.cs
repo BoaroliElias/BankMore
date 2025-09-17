@@ -158,6 +158,9 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = "swagger";
 });
 
+var inContainer = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+if (!inContainer) app.UseHttpsRedirection();
+
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");

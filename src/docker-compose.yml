@@ -1,0 +1,65 @@
+services:
+  bankmore-postgres:
+    image: postgres:16-alpine
+    container_name: bankmore-postgres
+    environment:
+      POSTGRES_DB: bankmore
+      POSTGRES_USER: bankmore
+      POSTGRES_PASSWORD: bankmore
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d:ro
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  bankmore-adminer:
+    image: adminer:latest
+    container_name: bankmore-adminer
+    depends_on:
+      - bankmore-postgres
+    ports:
+      - "8080:8080"
+
+  contacorrente-api:
+    build:
+      context: .                       # ← raiz da solução (src)
+      dockerfile: ./ContaCorrente.Api/Dockerfile
+    container_name: contacorrente-api
+    depends_on:
+      - bankmore-postgres
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Postgres: Host=bankmore-postgres;Port=5432;Database=bankmore;Username=bankmore;Password=bankmore
+      Jwt__Issuer: BankMore
+      Jwt__Audience: BankMore
+      Jwt__Key: dev-super-secret-key-change-me-32chars-min
+    ports:
+      - "7121:8080"
+
+  transferencia-api:
+    build:
+      context: .                       # ← raiz da solução (src)
+      dockerfile: ./Transferencia.Api/Dockerfile
+    container_name: transferencia-api
+    depends_on:
+      - bankmore-postgres
+      - contacorrente-api
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Postgres: Host=bankmore-postgres;Port=5432;Database=bankmore;Username=bankmore;Password=bankmore
+      Jwt__Issuer: BankMore
+      Jwt__Audience: BankMore
+      Jwt__Key: dev-super-secret-key-change-me-32chars-min
+      ServiceUrls__ContaCorrenteApi: http://contacorrente-api:8080
+    ports:
+      - "7254:8080"
+
+volumes:
+  pgdata:
