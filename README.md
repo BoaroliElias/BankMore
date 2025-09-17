@@ -35,16 +35,6 @@ Decisões de Arquitetura
 - JWT com chave de desenvolvimento (Jwt__Key no docker-compose.yml).
 - Para produção, usar secret seguro (Vault/KeyVault) e habilitar validação de emissor/audience conforme necessário.
 
-## Próximos passos (fora do escopo desta entrega)
-
-Testes automatizados (unitários e integração)
-
-Assincronia com Kafka (tópicos de transferências / tarifação)
-
-Cache seletivo (ex.: saldo)
-
-CI/CD e imagens publicadas em registry
-
 ### URLs
 
 - Conta Corrente (Swagger): http://localhost:7121/swagger
